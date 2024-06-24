@@ -1,0 +1,226 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "api/v1/dns.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "DnsService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/dns": {
+      "get": {
+        "summary": "Get all used nameservers",
+        "operationId": "DnsService_GetNameserverList",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1NameserverList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "DnsService"
+        ]
+      },
+      "post": {
+        "summary": "Create the nameserer",
+        "operationId": "DnsService_CreateNameserver",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Nameserver"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateNameserverRequest"
+            }
+          }
+        ],
+        "tags": [
+          "DnsService"
+        ]
+      }
+    },
+    "/api/dns/{index}": {
+      "get": {
+        "summary": "Get nameserver by index",
+        "operationId": "DnsService_GetNameserverAt",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Nameserver"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "index",
+            "description": "Index of the nameserver (can be received from GetNameserverList()).",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "DnsService"
+        ]
+      },
+      "delete": {
+        "summary": "Delete the nameserver",
+        "operationId": "DnsService_DeleteNameserver",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Nameserver"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "index",
+            "description": "Index of the nameserver to delete (can be received from GetNameserverList()).",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "checksum",
+            "description": "The last received checksum from GetNameserverList().",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "DnsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CreateNameserverRequest": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "format": "int32",
+          "description": "Index of the nameserver (can be received from GetNameserverList()).\nIf set, inserts nameserver at specified index.\nOtherwise, puts nameserver after the last one."
+        },
+        "address": {
+          "type": "string",
+          "description": "Internet address of the name server, either IPv4 or IPv6."
+        },
+        "checksum": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The last received checksum from GetNameserverList().\nRequired if Index field is set."
+        }
+      }
+    },
+    "v1Nameserver": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "address": {
+          "type": "string",
+          "description": "Internet address of the name server, either IPv4 or IPv6."
+        }
+      }
+    },
+    "v1NameserverList": {
+      "type": "object",
+      "properties": {
+        "servers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Nameserver"
+          },
+          "description": "List of all \"nameserver\" options in resolv.conf file."
+        },
+        "checksum": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The checksum of all meaningful fields in resolv.conf file.\nMust be used to prevent cases when client operates on outdated data."
+        }
+      }
+    }
+  }
+}

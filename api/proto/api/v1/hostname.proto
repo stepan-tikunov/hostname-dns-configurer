@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package api.v1;
+
+option go_package = "github.com/stepan-tikunov/hostname-dns-configurer/api;api";
+
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+service HostnameService {
+	// Set hostname
+	rpc SetHostname(HostnameMessage) returns (HostnameMessage) {
+		option (google.api.http) = {
+			post: "/api/hostname",
+			body: "*"
+		};
+	}
+
+	// Get hostname
+	rpc GetHostname(google.protobuf.Empty) returns (HostnameMessage) {
+		option (google.api.http) = {
+			get: "/api/hostname"
+		};
+	}
+}
+
+message HostnameMessage {
+	// Server hostname. Can be checked via `hostname` command.
+	string hostname = 1;
+}

@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package api.v1;
+
+option go_package = "github.com/stepan-tikunov/hostname-dns-configurer/api;api";
+
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+
+// Nameserver configuration service
+service DnsService {
+  // Get all used nameservers
+  rpc GetNameserverList(google.protobuf.Empty) returns (NameserverList) {
+    option (google.api.http) = {
+      get: "/api/dns"
+    };
+  }
+
+  // Get nameserver by index
+  rpc GetNameserverAt(GetNameserverRequest) returns (Nameserver) {
+    option (google.api.http) = {
+      get: "/api/dns/{index}"
+    };
+  }
+
+  // Create the nameserer
+  rpc CreateNameserver(CreateNameserverRequest) returns (Nameserver) {
+    option (google.api.http) = {
+      post: "/api/dns",
+      body: "*"
+    };
+  }
+
+  // Delete the nameserver
+  rpc DeleteNameserver(DeleteNameserverRequest) returns (Nameserver) {
+    option (google.api.http) = {
+      delete: "/api/dns/{index}",
+    };
+  }
+}
+
+message NameserverList {
+  // List of all "nameserver" options in resolv.conf file.
+  repeated Nameserver servers = 1;
+
+  // The checksum of all meaningful fields in resolv.conf file.
+  // Must be used to prevent cases when client operates on outdated data.
+  int32 checksum = 2;
+}
+
+message Nameserver {
+  int32 index = 1;
+
+  // Internet address of the name server, either IPv4 or IPv6.
+  string address = 2;
+}
+
+message GetNameserverRequest {
+  // Index of the nameserver (can be received from GetNameserverList()).
+  int32 index = 1;
+}
+
+message CreateNameserverRequest {
+  // Index of the nameserver (can be received from GetNameserverList()).
+  // If set, inserts nameserver at specified index.
+  // Otherwise, puts nameserver after the last one.
+  optional int32 index = 1;
+
+  // Internet address of the name server, either IPv4 or IPv6.
+  string address = 2;
+
+  // The last received checksum from GetNameserverList().
+  // Required if Index field is set.
+  optional int32 checksum = 3;
+}
+
+message DeleteNameserverRequest {
+  // Index of the nameserver to delete (can be received from GetNameserverList()).
+  int32 index = 1;
+
+  // The last received checksum from GetNameserverList().
+  int32 checksum = 2;
+}
