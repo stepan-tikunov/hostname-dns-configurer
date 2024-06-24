@@ -24,7 +24,7 @@ service DnsService {
   }
 
   // Create the nameserer
-  rpc CreateNameserver(CreateNameserverRequest) returns (Nameserver) {
+  rpc CreateNameserver(CreateNameserverRequest) returns (NameserverResponse) {
     option (google.api.http) = {
       post: "/api/dns",
       body: "*"
@@ -32,7 +32,7 @@ service DnsService {
   }
 
   // Delete the nameserver
-  rpc DeleteNameserver(DeleteNameserverRequest) returns (Nameserver) {
+  rpc DeleteNameserver(DeleteNameserverRequest) returns (NameserverResponse) {
     option (google.api.http) = {
       delete: "/api/dns/{index}",
     };

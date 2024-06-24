@@ -45,7 +45,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1Nameserver"
+              "$ref": "#/definitions/v1NameserverResponse"
             }
           },
           "default": {
@@ -109,7 +109,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1Nameserver"
+              "$ref": "#/definitions/v1NameserverResponse"
             }
           },
           "default": {
