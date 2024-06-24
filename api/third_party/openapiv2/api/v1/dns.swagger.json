@@ -78,7 +78,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1Nameserver"
+              "$ref": "#/definitions/v1NameserverResponse"
             }
           },
           "default": {
@@ -214,6 +214,20 @@
             "$ref": "#/definitions/v1Nameserver"
           },
           "description": "List of all \"nameserver\" options in resolv.conf file."
+        },
+        "checksum": {
+          "type": "integer",
+          "format": "int32",
+          "description": "The checksum of all meaningful fields in resolv.conf file.\nMust be used to prevent cases when client operates on outdated data."
+        }
+      }
+    },
+    "v1NameserverResponse": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "$ref": "#/definitions/v1Nameserver",
+          "title": "The requested nameserver"
         },
         "checksum": {
           "type": "integer",

@@ -35,7 +35,7 @@ type DnsServiceClient interface {
 	// Get all used nameservers
 	GetNameserverList(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*NameserverList, error)
 	// Get nameserver by index
-	GetNameserverAt(ctx context.Context, in *GetNameserverRequest, opts ...grpc.CallOption) (*Nameserver, error)
+	GetNameserverAt(ctx context.Context, in *GetNameserverRequest, opts ...grpc.CallOption) (*NameserverResponse, error)
 	// Create the nameserer
 	CreateNameserver(ctx context.Context, in *CreateNameserverRequest, opts ...grpc.CallOption) (*Nameserver, error)
 	// Delete the nameserver
@@ -60,9 +60,9 @@ func (c *dnsServiceClient) GetNameserverList(ctx context.Context, in *emptypb.Em
 	return out, nil
 }
 
-func (c *dnsServiceClient) GetNameserverAt(ctx context.Context, in *GetNameserverRequest, opts ...grpc.CallOption) (*Nameserver, error) {
+func (c *dnsServiceClient) GetNameserverAt(ctx context.Context, in *GetNameserverRequest, opts ...grpc.CallOption) (*NameserverResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Nameserver)
+	out := new(NameserverResponse)
 	err := c.cc.Invoke(ctx, DnsService_GetNameserverAt_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -99,7 +99,7 @@ type DnsServiceServer interface {
 	// Get all used nameservers
 	GetNameserverList(context.Context, *emptypb.Empty) (*NameserverList, error)
 	// Get nameserver by index
-	GetNameserverAt(context.Context, *GetNameserverRequest) (*Nameserver, error)
+	GetNameserverAt(context.Context, *GetNameserverRequest) (*NameserverResponse, error)
 	// Create the nameserer
 	CreateNameserver(context.Context, *CreateNameserverRequest) (*Nameserver, error)
 	// Delete the nameserver
@@ -114,7 +114,7 @@ type UnimplementedDnsServiceServer struct {
 func (UnimplementedDnsServiceServer) GetNameserverList(context.Context, *emptypb.Empty) (*NameserverList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNameserverList not implemented")
 }
-func (UnimplementedDnsServiceServer) GetNameserverAt(context.Context, *GetNameserverRequest) (*Nameserver, error) {
+func (UnimplementedDnsServiceServer) GetNameserverAt(context.Context, *GetNameserverRequest) (*NameserverResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetNameserverAt not implemented")
 }
 func (UnimplementedDnsServiceServer) CreateNameserver(context.Context, *CreateNameserverRequest) (*Nameserver, error) {
