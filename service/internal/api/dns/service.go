@@ -2,12 +2,13 @@ package dns
 
 import (
 	"context"
+	"log/slog"
+
 	api "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/api/v1"
 	"github.com/stepan-tikunov/hostname-dns-configurer/service/internal/dns"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"log/slog"
 )
 
 type service struct {
@@ -39,7 +40,10 @@ func (s service) GetNameserverList(_ context.Context, _ *emptypb.Empty) (*api.Na
 	return list, err
 }
 
-func (s service) GetNameserverAt(_ context.Context, request *api.GetNameserverRequest) (*api.NameserverResponse, error) {
+func (s service) GetNameserverAt(
+	_ context.Context,
+	request *api.GetNameserverRequest,
+) (*api.NameserverResponse, error) {
 	rc := dns.GetResolvConfInstance()
 	index := request.GetIndex()
 	n, checksum, err := rc.GetNameserverAt(int(index))
@@ -81,7 +85,10 @@ func (s service) createNameserverLast(request *api.CreateNameserverRequest) (*ap
 	return response, nil
 }
 
-func (s service) CreateNameserver(_ context.Context, request *api.CreateNameserverRequest) (*api.NameserverResponse, error) {
+func (s service) CreateNameserver(
+	_ context.Context,
+	request *api.CreateNameserverRequest,
+) (*api.NameserverResponse, error) {
 	if request.Index == nil {
 		return s.createNameserverLast(request)
 	}
@@ -108,7 +115,10 @@ func (s service) CreateNameserver(_ context.Context, request *api.CreateNameserv
 	return response, nil
 }
 
-func (s service) DeleteNameserver(ctx context.Context, request *api.DeleteNameserverRequest) (*api.NameserverResponse, error) {
+func (s service) DeleteNameserver(
+	_ context.Context,
+	request *api.DeleteNameserverRequest,
+) (*api.NameserverResponse, error) {
 	rc := dns.GetResolvConfInstance()
 
 	checksum := int(request.GetChecksum())

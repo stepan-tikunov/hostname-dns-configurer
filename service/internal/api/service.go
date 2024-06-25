@@ -2,12 +2,12 @@ package api
 
 import (
 	"fmt"
-	"github.com/stepan-tikunov/hostname-dns-configurer/service/internal/api/dns"
-	"github.com/stepan-tikunov/hostname-dns-configurer/service/internal/api/hostname"
 	"log/slog"
 	"net"
 
 	api "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/api/v1"
+	"github.com/stepan-tikunov/hostname-dns-configurer/service/internal/api/dns"
+	"github.com/stepan-tikunov/hostname-dns-configurer/service/internal/api/hostname"
 	"google.golang.org/grpc"
 )
 
