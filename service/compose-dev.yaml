@@ -1,0 +1,12 @@
+version: "3"
+services:
+  service:
+    container_name: service
+    build: ./
+    volumes:
+      - ./:/app/
+    ports:
+      - "9000:9000"
+      - "8080:8080"
+      - "2345:2345"
+    privileged: true
