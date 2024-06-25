@@ -5,15 +5,47 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: Run linter
+  lint-api:
+    name: Lint gRPC api
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: bufbuild/buf-setup-action@v1
+      - name: Setup Buf
+        uses: bufbuild/buf-setup-action@v1
         with:
           version: "1.34.0"
           github_token: ${{ github.token }}
-      - uses: bufbuild/buf-lint-action@v1
+      - name: Run linter
+        uses: bufbuild/buf-lint-action@v1
         with:
           input: api
+  lint-service:
+    name: Lint service
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+      - name: Run linter
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.58
+          working-directory: service
+  test-service:
+    needs: lint-service
+    name: Test service
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+      - name: Install dependencies
+        run: go get .
+        working-directory: service
+      - name: Run tests
+        run: go test ./...
+        working-directory: service
