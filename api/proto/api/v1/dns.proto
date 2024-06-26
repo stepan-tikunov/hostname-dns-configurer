@@ -45,7 +45,7 @@ message NameserverList {
 
   // The checksum of all meaningful fields in resolv.conf file.
   // Must be used to prevent cases when client operates on outdated data.
-  int32 checksum = 2;
+  uint32 checksum = 2;
 }
 
 message Nameserver {
@@ -61,7 +61,7 @@ message NameserverResponse {
 
   // The checksum of all meaningful fields in resolv.conf file.
   // Must be used to prevent cases when client operates on outdated data.
-  int32 checksum = 2;
+  uint32 checksum = 2;
 }
 
 message GetNameserverRequest {
@@ -80,7 +80,7 @@ message CreateNameserverRequest {
 
   // The last received checksum from GetNameserverList().
   // Required if Index field is set.
-  optional int32 checksum = 3;
+  optional uint32 checksum = 3;
 }
 
 message DeleteNameserverRequest {
@@ -88,5 +88,5 @@ message DeleteNameserverRequest {
   int32 index = 1;
 
   // The last received checksum from GetNameserverList().
-  int32 checksum = 2;
+  uint32 checksum = 2;
 }

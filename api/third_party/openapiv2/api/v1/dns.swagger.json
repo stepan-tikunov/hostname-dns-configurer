@@ -134,7 +134,7 @@
             "in": "query",
             "required": false,
             "type": "integer",
-            "format": "int32"
+            "format": "int64"
           }
         ],
         "tags": [
@@ -186,7 +186,7 @@
         },
         "checksum": {
           "type": "integer",
-          "format": "int32",
+          "format": "int64",
           "description": "The last received checksum from GetNameserverList().\nRequired if Index field is set."
         }
       }
@@ -217,7 +217,7 @@
         },
         "checksum": {
           "type": "integer",
-          "format": "int32",
+          "format": "int64",
           "description": "The checksum of all meaningful fields in resolv.conf file.\nMust be used to prevent cases when client operates on outdated data."
         }
       }
@@ -231,7 +231,7 @@
         },
         "checksum": {
           "type": "integer",
-          "format": "int32",
+          "format": "int64",
           "description": "The checksum of all meaningful fields in resolv.conf file.\nMust be used to prevent cases when client operates on outdated data."
         }
       }
