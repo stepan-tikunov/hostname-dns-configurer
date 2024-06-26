@@ -34,7 +34,7 @@ func (s service) GetNameserverList(_ context.Context, _ *emptypb.Empty) (*api.Na
 
 	list := &api.NameserverList{
 		Servers:  servers,
-		Checksum: int32(checksum),
+		Checksum: checksum,
 	}
 
 	return list, err
@@ -57,7 +57,7 @@ func (s service) GetNameserverAt(
 			Index:   index,
 			Address: n,
 		},
-		Checksum: int32(checksum),
+		Checksum: checksum,
 	}
 
 	return resp, nil
@@ -66,10 +66,9 @@ func (s service) GetNameserverAt(
 func (s service) createNameserverLast(request *api.CreateNameserverRequest) (*api.NameserverResponse, error) {
 	rc := dns.GetResolvConfInstance()
 
-	checksum := int(request.GetChecksum())
 	nameserver := request.GetAddress()
 
-	index, checksum, err := rc.CreateNameserverLast(checksum, nameserver)
+	index, checksum, err := rc.CreateNameserverLast(nameserver)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create nameserver: %v", err)
 	}
@@ -79,7 +78,7 @@ func (s service) createNameserverLast(request *api.CreateNameserverRequest) (*ap
 			Index:   int32(index),
 			Address: nameserver,
 		},
-		Checksum: int32(checksum),
+		Checksum: checksum,
 	}
 
 	return response, nil
@@ -95,7 +94,7 @@ func (s service) CreateNameserver(
 
 	rc := dns.GetResolvConfInstance()
 
-	checksum := int(request.GetChecksum())
+	checksum := request.GetChecksum()
 	index := int(request.GetIndex())
 	nameserver := request.GetAddress()
 
@@ -109,7 +108,7 @@ func (s service) CreateNameserver(
 			Index:   int32(index),
 			Address: nameserver,
 		},
-		Checksum: int32(checksum),
+		Checksum: checksum,
 	}
 
 	return response, nil
@@ -121,12 +120,12 @@ func (s service) DeleteNameserver(
 ) (*api.NameserverResponse, error) {
 	rc := dns.GetResolvConfInstance()
 
-	checksum := int(request.GetChecksum())
+	checksum := request.GetChecksum()
 	index := int(request.GetIndex())
 
 	nameserver, checksum, err := rc.DeleteNameserverAt(checksum, index)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create nameserver: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to delete nameserver: %v", err)
 	}
 
 	response := &api.NameserverResponse{
@@ -134,7 +133,7 @@ func (s service) DeleteNameserver(
 			Index:   int32(index),
 			Address: nameserver,
 		},
-		Checksum: int32(checksum),
+		Checksum: checksum,
 	}
 
 	return response, nil

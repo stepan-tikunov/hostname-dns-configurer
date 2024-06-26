@@ -65,7 +65,7 @@ func parseEntry(line string) *entry {
 
 type entries []entry
 
-func (e entries) Checksum() int {
+func (e entries) Checksum() uint32 {
 	bytes := make([]byte, 0)
 	for _, entry := range e {
 		entryBytes := []byte(entry.option + entry.value)
@@ -74,7 +74,7 @@ func (e entries) Checksum() int {
 
 	result := crc32.ChecksumIEEE(bytes)
 
-	return int(result)
+	return result
 }
 
 func (e entries) IndexNthNameserver(n int) int {
@@ -146,37 +146,43 @@ func (r *ResolvConf) getNameservers() []string {
 	return result
 }
 
-func (r *ResolvConf) GetNameservers() ([]string, int, error) {
+func (r *ResolvConf) GetNameservers() (nameservers []string, checksum uint32, err error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	err := r.read()
+	err = r.read()
 	if err != nil {
-		return nil, 0, err
+		return
 	}
 
-	return r.getNameservers(), r.entries.Checksum(), nil
+	nameservers = r.getNameservers()
+	checksum = r.entries.Checksum()
+
+	return
 }
 
-func (r *ResolvConf) GetNameserverAt(n int) (string, int, error) {
+func (r *ResolvConf) GetNameserverAt(n int) (nameserver string, checksum uint32, err error) {
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	err := r.read()
+	err = r.read()
 	if err != nil {
-		return "", 0, err
+		return
 	}
 
 	index := r.entries.IndexNthNameserver(n)
 	if index < 0 {
-		return "", 0, errors.New("index out of range")
+		err = errors.New("index out of range")
+		return
 	}
-	nameserver := r.entries[index].value
 
-	return nameserver, r.entries.Checksum(), nil
+	nameserver = r.entries[index].value
+	checksum = r.entries.Checksum()
+
+	return
 }
 
-func (r *ResolvConf) createNameserverAt(checksum, index int, nameserver string) error {
+func (r *ResolvConf) createNameserverAt(checksum uint32, index int, nameserver string) error {
 	if r.entries.Checksum() != checksum {
 		return errors.New("file changed on disk since last read")
 	}
@@ -188,7 +194,7 @@ func (r *ResolvConf) createNameserverAt(checksum, index int, nameserver string) 
 	}
 
 	if index == len(nameservers) {
-		return r.createNameserverLast(checksum, nameserver)
+		return r.createNameserverLast(nameserver)
 	}
 
 	i := r.entries.IndexNthNameserver(index)
@@ -201,28 +207,27 @@ func (r *ResolvConf) createNameserverAt(checksum, index int, nameserver string) 
 	return nil
 }
 
-func (r *ResolvConf) CreateNameserverAt(checksum, index int, nameserver string) (int, error) {
+func (r *ResolvConf) CreateNameserverAt(checksum uint32, index int, nameserver string) (updChecksum uint32, err error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	err := r.read()
+	err = r.read()
 	if err != nil {
-		return 0, err
+		return
 	}
 
 	err = r.createNameserverAt(checksum, index, nameserver)
 	if err != nil {
-		return 0, err
+		return
 	}
 
-	return r.entries.Checksum(), r.write()
+	updChecksum = r.entries.Checksum()
+	err = r.write()
+
+	return
 }
 
-func (r *ResolvConf) createNameserverLast(checksum int, nameserver string) error {
-	if r.entries.Checksum() != checksum {
-		return errors.New("file changed on disk since last read")
-	}
-
+func (r *ResolvConf) createNameserverLast(nameserver string) error {
 	newEntry := entry{
 		option: OptionTypeNameserver,
 		value:  nameserver,
@@ -233,52 +238,62 @@ func (r *ResolvConf) createNameserverLast(checksum int, nameserver string) error
 	return nil
 }
 
-func (r *ResolvConf) CreateNameserverLast(checksum int, nameserver string) (int, int, error) {
+func (r *ResolvConf) CreateNameserverLast(nameserver string) (index int, checksum uint32, err error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	err := r.read()
+	err = r.read()
 	if err != nil {
-		return 0, 0, err
+		return
 	}
 
-	err = r.createNameserverLast(checksum, nameserver)
+	err = r.createNameserverLast(nameserver)
 	if err != nil {
-		return 0, 0, err
+		return
 	}
 
-	return len(r.getNameservers()), r.entries.Checksum(), r.write()
+	index = len(r.getNameservers()) - 1
+	checksum = r.entries.Checksum()
+
+	err = r.write()
+
+	return
 }
 
-func (r *ResolvConf) deleteNameserverAt(checksum, index int) (string, error) {
+func (r *ResolvConf) deleteNameserverAt(checksum uint32, index int) (nameserver string, err error) {
 	if r.entries.Checksum() != checksum {
-		return "", errors.New("file changed on disk since last read")
+		err = errors.New("file changed on disk since last read")
+		return
 	}
 
 	deleteAt := r.entries.IndexNthNameserver(index)
 	if deleteAt < 0 {
-		return "", errors.New("index out of range")
+		err = errors.New("index out of range")
+		return
 	}
 
-	nameserver := r.entries[index].value
+	nameserver = r.entries[deleteAt].value
 	r.entries = append(r.entries[:deleteAt], r.entries[deleteAt+1:]...)
 
-	return nameserver, nil
+	return
 }
 
-func (r *ResolvConf) DeleteNameserverAt(checksum, index int) (string, int, error) {
+func (r *ResolvConf) DeleteNameserverAt(checksum uint32, index int) (nameserver string, updChecksum uint32, err error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 
-	err := r.read()
+	err = r.read()
 	if err != nil {
-		return "", 0, err
+		return
 	}
 
-	nameserver, err := r.deleteNameserverAt(checksum, index)
+	nameserver, err = r.deleteNameserverAt(checksum, index)
 	if err != nil {
-		return "", 0, err
+		return
 	}
 
-	return nameserver, r.entries.Checksum(), r.write()
+	updChecksum = r.entries.Checksum()
+	err = r.write()
+
+	return
 }

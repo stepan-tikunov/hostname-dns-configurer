@@ -259,8 +259,7 @@ func TestResolvConf_createNameserverLast(t *testing.T) {
 		entries: entries{},
 	}
 
-	c := r.entries.Checksum()
-	err := r.createNameserverLast(c, "1.1.1.1")
+	err := r.createNameserverLast("1.1.1.1")
 	if err != nil {
 		t.Errorf("ResolvConf.createNameserverLast(...) must not return error, r.entries: %s, error: %s",
 			formatEntries(r.entries),
@@ -278,8 +277,7 @@ func TestResolvConf_createNameserverLast(t *testing.T) {
 		)
 	}
 
-	c = r.entries.Checksum()
-	err = r.createNameserverLast(c, "2.2.2.2")
+	err = r.createNameserverLast("2.2.2.2")
 	if err != nil {
 		t.Errorf("ResolvConf.createNameserverLast(...) must not return error, r.entries: %s, error: %s",
 			formatEntries(r.entries),

@@ -10,6 +10,8 @@ github.com/stepan-tikunov/hostname-dns-configurer/api v0.0.5 h1:viTZh+5ZR2jUMmMp
 github.com/stepan-tikunov/hostname-dns-configurer/api v0.0.5/go.mod h1:LHGHeh4k4OB8wkca0tsWvBhyYfbY3HHLkFseX3yRXfQ=
 github.com/stepan-tikunov/hostname-dns-configurer/api v0.0.6 h1:8tfHfQSlMjrpQAz49s1bBhf29LimsR9wtX8l/WBv9HA=
 github.com/stepan-tikunov/hostname-dns-configurer/api v0.0.6/go.mod h1:LHGHeh4k4OB8wkca0tsWvBhyYfbY3HHLkFseX3yRXfQ=
+github.com/stepan-tikunov/hostname-dns-configurer/api v0.0.7 h1:jtnJqcX9W89HwIY4WfcmB6l73zIk8iAtCYznOKg0rYc=
+github.com/stepan-tikunov/hostname-dns-configurer/api v0.0.7/go.mod h1:LHGHeh4k4OB8wkca0tsWvBhyYfbY3HHLkFseX3yRXfQ=
 golang.org/x/net v0.23.0 h1:7EYJ93RZ9vYSZAIb2x3lnuvqO5zneoD6IvWjuhfxjTs=
 golang.org/x/net v0.23.0/go.mod h1:JKghWKKOSdJwpW2GEx0Ja7fmaKnMsbu+MWVZTokSYmg=
 golang.org/x/sys v0.18.0 h1:DBdB3niSjOA/O0blCZBqDefyWNYveAYMNF1Wum0DYQ4=
