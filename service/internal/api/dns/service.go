@@ -16,12 +16,13 @@ type service struct {
 }
 
 func (s service) GetNameserverList(_ context.Context, _ *emptypb.Empty) (*api.NameserverList, error) {
+	slog.Info("Incoming GetNameserverList() request")
 	rc := dns.GetResolvConfInstance()
 	ns, checksum, err := rc.GetNameservers()
 
 	if err != nil {
-		slog.Error("failed to get nameservers", slog.Any("error", err))
-		return nil, status.Errorf(codes.Internal, "failed to get nameservers: %v", err)
+		slog.Error("Failed to get nameservers", slog.Any("error", err))
+		return nil, status.Errorf(codes.Internal, "failed to get nameservers: %s", err)
 	}
 
 	servers := make([]*api.Nameserver, 0, len(ns))
@@ -37,18 +38,19 @@ func (s service) GetNameserverList(_ context.Context, _ *emptypb.Empty) (*api.Na
 		Checksum: checksum,
 	}
 
-	return list, err
+	return list, nil
 }
 
 func (s service) GetNameserverAt(
 	_ context.Context,
 	request *api.GetNameserverRequest,
 ) (*api.NameserverResponse, error) {
+	slog.Info("Incoming GetNameserverAt() request", slog.Any("request", request))
 	rc := dns.GetResolvConfInstance()
 	index := request.GetIndex()
 	n, checksum, err := rc.GetNameserverAt(int(index))
 	if err != nil {
-		slog.Error("failed to get nameserver", slog.Int("index", int(index)), slog.Any("error", err))
+		slog.Error("Failed to get nameserver", slog.Int("index", int(index)), slog.Any("error", err))
 		return nil, err
 	}
 
@@ -70,7 +72,8 @@ func (s service) createNameserverLast(request *api.CreateNameserverRequest) (*ap
 
 	index, checksum, err := rc.CreateNameserverLast(nameserver)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create nameserver: %v", err)
+		slog.Error("Failed to create nameserver", slog.Any("error", err))
+		return nil, status.Errorf(codes.Internal, "failed to create nameserver: %s", err)
 	}
 
 	response := &api.NameserverResponse{
@@ -81,6 +84,8 @@ func (s service) createNameserverLast(request *api.CreateNameserverRequest) (*ap
 		Checksum: checksum,
 	}
 
+	slog.Info("Created nameserver", slog.Int("index", index), slog.String("address", nameserver))
+
 	return response, nil
 }
 
@@ -88,6 +93,8 @@ func (s service) CreateNameserver(
 	_ context.Context,
 	request *api.CreateNameserverRequest,
 ) (*api.NameserverResponse, error) {
+	slog.Info("Incoming CreateNameserver() request", slog.Any("request", request))
+
 	if request.Index == nil {
 		return s.createNameserverLast(request)
 	}
@@ -100,7 +107,8 @@ func (s service) CreateNameserver(
 
 	checksum, err := rc.CreateNameserverAt(checksum, index, nameserver)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create nameserver: %v", err)
+		slog.Error("Failed to create nameserver", slog.Any("error", err))
+		return nil, status.Errorf(codes.Internal, "failed to create nameserver: %s", err)
 	}
 
 	response := &api.NameserverResponse{
@@ -110,6 +118,8 @@ func (s service) CreateNameserver(
 		},
 		Checksum: checksum,
 	}
+
+	slog.Info("Created nameserver", slog.Int("index", index), slog.String("address", nameserver))
 
 	return response, nil
 }
@@ -118,6 +128,8 @@ func (s service) DeleteNameserver(
 	_ context.Context,
 	request *api.DeleteNameserverRequest,
 ) (*api.NameserverResponse, error) {
+	slog.Info("Incoming DeleteNameserver() request", slog.Any("request", request))
+
 	rc := dns.GetResolvConfInstance()
 
 	checksum := request.GetChecksum()
@@ -125,7 +137,8 @@ func (s service) DeleteNameserver(
 
 	nameserver, checksum, err := rc.DeleteNameserverAt(checksum, index)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to delete nameserver: %v", err)
+		slog.Error("Failed to delete nameserver", slog.Any("error", err))
+		return nil, status.Errorf(codes.Internal, "failed to delete nameserver: %s", err)
 	}
 
 	response := &api.NameserverResponse{
@@ -135,6 +148,8 @@ func (s service) DeleteNameserver(
 		},
 		Checksum: checksum,
 	}
+
+	slog.Info("Deleted nameserver", slog.Int("index", index), slog.String("address", nameserver))
 
 	return response, nil
 }

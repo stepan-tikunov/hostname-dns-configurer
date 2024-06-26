@@ -4,6 +4,7 @@ package hostname
 
 import (
 	"context"
+	"log/slog"
 	"syscall"
 
 	api "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/api/v1"
@@ -15,6 +16,7 @@ import (
 func (s *service) SetHostname(_ context.Context, msg *api.HostnameMessage) (*api.HostnameMessage, error) {
 	buf := []byte(msg.GetHostname())
 	if len(buf) > limits.HOST_NAME_MAX {
+		slog.Error("Failed to set hostname: it is too long", slog.Int("limit", limits.HOST_NAME_MAX))
 		return nil, status.Errorf(codes.InvalidArgument, "name too long")
 	}
 
@@ -23,8 +25,11 @@ func (s *service) SetHostname(_ context.Context, msg *api.HostnameMessage) (*api
 
 	err := syscall.Sethostname(buf)
 	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
+		slog.Error("Failed to set hostname", slog.Any("error", err))
+		return nil, status.Errorf(codes.Internal, "failed to set hostname: %s", err)
 	}
 
-	return msg, err
+	slog.Info("Updated hostname", slog.String("hostname", msg.GetHostname()))
+
+	return msg, nil
 }
