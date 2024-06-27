@@ -48,6 +48,12 @@ This will automatically build and start the service.
 ### Client
 The client binary is located in `./client/client` and supports various actions.
 
+#### Connection options
+You may use the following flags with any command:
+- `--host [host]` or `-H [host]`: Hostname or address of the service.
+- `--port [port]` or `-P [port]`: Port of the service.
+- `--http`: When set, client connects to the service via HTTP instead of gRPC.
+ 
 #### Get hostname
 ```shell
 ./client/client hostname get
