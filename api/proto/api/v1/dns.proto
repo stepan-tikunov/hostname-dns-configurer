@@ -27,7 +27,7 @@ service DnsService {
   rpc CreateNameserver(CreateNameserverRequest) returns (NameserverResponse) {
     option (google.api.http) = {
       post: "/api/dns",
-      body: "*"
+      body: "address"
     };
   }
 

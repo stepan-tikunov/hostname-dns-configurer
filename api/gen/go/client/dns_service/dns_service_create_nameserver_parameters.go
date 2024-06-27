@@ -14,8 +14,7 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-
-	"github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/swagger"
+	"github.com/go-openapi/swag"
 )
 
 // NewDNSServiceCreateNameserverParams creates a new DNSServiceCreateNameserverParams object,
@@ -63,8 +62,30 @@ DNSServiceCreateNameserverParams contains all the parameters to send to the API 
 */
 type DNSServiceCreateNameserverParams struct {
 
-	// Body.
-	Body *swagger.V1CreateNameserverRequest
+	/* Address.
+
+	   Internet address of the name server, either IPv4 or IPv6.
+	*/
+	Address string
+
+	/* Checksum.
+
+	     The last received checksum from GetNameserverList().
+	Required if Index field is set.
+
+	     Format: int64
+	*/
+	Checksum *int64
+
+	/* Index.
+
+	     Index of the nameserver (can be received from GetNameserverList()).
+	If set, inserts nameserver at specified index.
+	Otherwise, puts nameserver after the last one.
+
+	     Format: int32
+	*/
+	Index *int32
 
 	timeout    time.Duration
 	Context    context.Context
@@ -119,15 +140,37 @@ func (o *DNSServiceCreateNameserverParams) SetHTTPClient(client *http.Client) {
 	o.HTTPClient = client
 }
 
-// WithBody adds the body to the Dns service create nameserver params
-func (o *DNSServiceCreateNameserverParams) WithBody(body *swagger.V1CreateNameserverRequest) *DNSServiceCreateNameserverParams {
-	o.SetBody(body)
+// WithAddress adds the address to the Dns service create nameserver params
+func (o *DNSServiceCreateNameserverParams) WithAddress(address string) *DNSServiceCreateNameserverParams {
+	o.SetAddress(address)
 	return o
 }
 
-// SetBody adds the body to the Dns service create nameserver params
-func (o *DNSServiceCreateNameserverParams) SetBody(body *swagger.V1CreateNameserverRequest) {
-	o.Body = body
+// SetAddress adds the address to the Dns service create nameserver params
+func (o *DNSServiceCreateNameserverParams) SetAddress(address string) {
+	o.Address = address
+}
+
+// WithChecksum adds the checksum to the Dns service create nameserver params
+func (o *DNSServiceCreateNameserverParams) WithChecksum(checksum *int64) *DNSServiceCreateNameserverParams {
+	o.SetChecksum(checksum)
+	return o
+}
+
+// SetChecksum adds the checksum to the Dns service create nameserver params
+func (o *DNSServiceCreateNameserverParams) SetChecksum(checksum *int64) {
+	o.Checksum = checksum
+}
+
+// WithIndex adds the index to the Dns service create nameserver params
+func (o *DNSServiceCreateNameserverParams) WithIndex(index *int32) *DNSServiceCreateNameserverParams {
+	o.SetIndex(index)
+	return o
+}
+
+// SetIndex adds the index to the Dns service create nameserver params
+func (o *DNSServiceCreateNameserverParams) SetIndex(index *int32) {
+	o.Index = index
 }
 
 // WriteToRequest writes these params to a swagger request
@@ -137,9 +180,41 @@ func (o *DNSServiceCreateNameserverParams) WriteToRequest(r runtime.ClientReques
 		return err
 	}
 	var res []error
-	if o.Body != nil {
-		if err := r.SetBodyParam(o.Body); err != nil {
-			return err
+	if err := r.SetBodyParam(o.Address); err != nil {
+		return err
+	}
+
+	if o.Checksum != nil {
+
+		// query param checksum
+		var qrChecksum int64
+
+		if o.Checksum != nil {
+			qrChecksum = *o.Checksum
+		}
+		qChecksum := swag.FormatInt64(qrChecksum)
+		if qChecksum != "" {
+
+			if err := r.SetQueryParam("checksum", qChecksum); err != nil {
+				return err
+			}
+		}
+	}
+
+	if o.Index != nil {
+
+		// query param index
+		var qrIndex int32
+
+		if o.Index != nil {
+			qrIndex = *o.Index
+		}
+		qIndex := swag.FormatInt32(qrIndex)
+		if qIndex != "" {
+
+			if err := r.SetQueryParam("index", qIndex); err != nil {
+				return err
+			}
 		}
 	}
 

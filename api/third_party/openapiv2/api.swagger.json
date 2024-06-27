@@ -60,12 +60,29 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "address",
+            "description": "Internet address of the name server, either IPv4 or IPv6.",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1CreateNameserverRequest"
+              "type": "string"
             }
+          },
+          {
+            "name": "index",
+            "description": "Index of the nameserver (can be received from GetNameserverList()).\nIf set, inserts nameserver at specified index.\nOtherwise, puts nameserver after the last one.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "checksum",
+            "description": "The last received checksum from GetNameserverList().\nRequired if Index field is set.",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
           }
         ],
         "tags": [
@@ -226,25 +243,6 @@
             "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
-        }
-      }
-    },
-    "v1CreateNameserverRequest": {
-      "type": "object",
-      "properties": {
-        "index": {
-          "type": "integer",
-          "format": "int32",
-          "description": "Index of the nameserver (can be received from GetNameserverList()).\nIf set, inserts nameserver at specified index.\nOtherwise, puts nameserver after the last one."
-        },
-        "address": {
-          "type": "string",
-          "description": "Internet address of the name server, either IPv4 or IPv6."
-        },
-        "checksum": {
-          "type": "integer",
-          "format": "int64",
-          "description": "The last received checksum from GetNameserverList().\nRequired if Index field is set."
         }
       }
     },
