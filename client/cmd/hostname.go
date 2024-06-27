@@ -7,7 +7,6 @@ import (
 
 	"github.com/spf13/cobra"
 	apiv1 "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/api/v1"
-	"github.com/stepan-tikunov/hostname-dns-configurer/client/internal/api"
 )
 
 var hostnameCmd = &cobra.Command{
@@ -25,12 +24,12 @@ var getHostnameCmd = &cobra.Command{
 	Short: "Get hostname",
 	Long:  "Get service's hostname",
 	RunE: func(_ *cobra.Command, _ []string) error {
-		cl, err := api.NewClient(serviceHost, servicePort)
+		err := client.Connect()
 		if err != nil {
 			return err
 		}
 
-		resp, err := cl.GetHostname(context.Background(), nil)
+		resp, err := client.GetHostname(context.Background(), nil)
 		if err != nil {
 			return err
 		}
@@ -47,13 +46,13 @@ var setHostnameCmd = &cobra.Command{
 	Long:  "Set service's hostname",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(_ *cobra.Command, args []string) error {
-		cl, err := api.NewClient(serviceHost, servicePort)
+		err := client.Connect()
 		if err != nil {
 			return err
 		}
 
 		req := apiv1.HostnameMessage{Hostname: args[0]}
-		resp, err := cl.SetHostname(context.Background(), &req)
+		resp, err := client.SetHostname(context.Background(), &req)
 		if err != nil {
 			return err
 		}

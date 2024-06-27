@@ -5,7 +5,9 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/stepan-tikunov/hostname-dns-configurer/client/internal/api"
+	api "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/api/v1"
+	"github.com/stepan-tikunov/hostname-dns-configurer/client/internal/grpc"
+	"github.com/stepan-tikunov/hostname-dns-configurer/client/internal/http"
 )
 
 func exitError(msg string) {
@@ -26,19 +28,38 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+type APIClient interface {
+	api.HostnameServiceClient
+	api.DnsServiceClient
+
+	Connect() error
+}
+
 var serviceHost string
 var servicePort int
+var useHTTP bool
+
+var client APIClient
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&serviceHost, "host", "H", "127.0.0.1", "service's hostname or IP address")
 
 	const defaultPort = 9000 // To suppress linter
 	rootCmd.PersistentFlags().IntVarP(&servicePort, "port", "P", defaultPort, "service's port")
+
+	rootCmd.PersistentFlags().BoolVar(&useHTTP, "http", false, "use HTTP instead of gRPC to connect to service")
 }
 
 func Execute() {
+	_ = rootCmd.ParseFlags(os.Args[1:])
+	if useHTTP {
+		client = http.NewClient(serviceHost, servicePort)
+	} else {
+		client = grpc.NewClient(serviceHost, servicePort)
+	}
+
 	if cmd, err := rootCmd.ExecuteC(); err != nil {
-		if msg, ok := api.ErrorMessage(err); ok {
+		if msg, ok := grpc.ErrorMessage(err); ok {
 			exitError(msg)
 		}
 

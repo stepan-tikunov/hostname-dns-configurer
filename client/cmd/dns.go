@@ -7,8 +7,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	apiv1 "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/api/v1"
-	"github.com/stepan-tikunov/hostname-dns-configurer/client/internal/api"
+	api "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/api/v1"
 	"github.com/stepan-tikunov/hostname-dns-configurer/client/internal/prompt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -29,12 +28,12 @@ var listCmd = &cobra.Command{
 	Short: "List all DNS servers",
 	Long:  "List all DNS servers in service's /etc/resolv.conf file",
 	RunE: func(_ *cobra.Command, _ []string) error {
-		cl, err := api.NewClient(serviceHost, servicePort)
+		err := client.Connect()
 		if err != nil {
 			return err
 		}
 
-		resp, err := cl.GetNameserverList(context.Background(), nil)
+		resp, err := client.GetNameserverList(context.Background(), nil)
 		if err != nil {
 			return err
 		}
@@ -48,8 +47,8 @@ var listCmd = &cobra.Command{
 	},
 }
 
-func getNameserverAndPrompt(msg string, cl *api.Client, index int32) (checksum uint32, err error) {
-	resp, err := cl.GetNameserverAt(context.Background(), &apiv1.GetNameserverRequest{Index: index})
+func getNameserverAndPrompt(msg string, index int32) (checksum uint32, err error) {
+	resp, err := client.GetNameserverAt(context.Background(), &api.GetNameserverRequest{Index: index})
 	if err != nil {
 		return
 	}
@@ -76,7 +75,7 @@ var addCmd = &cobra.Command{
 	Long:  "Add a DNS server to service's /etc/resolv.conf file",
 	Args:  cobra.ExactArgs(1),
 	RunE: func(_ *cobra.Command, args []string) error {
-		cl, err := api.NewClient(serviceHost, servicePort)
+		err := client.Connect()
 		if err != nil {
 			return err
 		}
@@ -87,10 +86,7 @@ var addCmd = &cobra.Command{
 			i := int32(indexFlag)
 
 			var c uint32
-			c, err = getNameserverAndPrompt(
-				"Do you want to insert new nameserver before it?",
-				cl, i,
-			)
+			c, err = getNameserverAndPrompt("Do you want to insert new nameserver before it?", i)
 			if err != nil {
 				return err
 			}
@@ -99,13 +95,13 @@ var addCmd = &cobra.Command{
 			index = &i
 		}
 
-		req := apiv1.CreateNameserverRequest{
+		req := api.CreateNameserverRequest{
 			Index:    index,
 			Address:  args[0],
 			Checksum: checksum,
 		}
 
-		resp, err := cl.CreateNameserver(context.Background(), &req)
+		resp, err := client.CreateNameserver(context.Background(), &req)
 		if err != nil {
 			return err
 		}
@@ -127,7 +123,7 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete a DNS server",
 	Long:  "Delete a DNS server from service's /etc/resolv.conf file",
 	RunE: func(_ *cobra.Command, _ []string) error {
-		cl, err := api.NewClient(serviceHost, servicePort)
+		err := client.Connect()
 		if err != nil {
 			return err
 		}
@@ -137,20 +133,17 @@ var deleteCmd = &cobra.Command{
 			return errors.New("index flag must be set to non-negative value")
 		}
 
-		checksum, err := getNameserverAndPrompt(
-			"Do you want to delete it?",
-			cl, i,
-		)
+		checksum, err := getNameserverAndPrompt("Do you want to delete it?", i)
 		if err != nil {
 			return err
 		}
 
-		req := apiv1.DeleteNameserverRequest{
+		req := api.DeleteNameserverRequest{
 			Index:    i,
 			Checksum: checksum,
 		}
 
-		resp, err := cl.DeleteNameserver(context.Background(), &req)
+		resp, err := client.DeleteNameserver(context.Background(), &req)
 		if err != nil {
 			return err
 		}
