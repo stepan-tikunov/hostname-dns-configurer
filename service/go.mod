@@ -4,7 +4,7 @@ go 1.22.4
 
 require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0
-	github.com/stepan-tikunov/hostname-dns-configurer/api v0.0.7
+	github.com/stepan-tikunov/hostname-dns-configurer/api v0.0.10
 	google.golang.org/grpc v1.64.0
 	google.golang.org/protobuf v1.34.2
 	modernc.org/libc v1.53.3

@@ -29,7 +29,13 @@ func RunGateway(httpPort, grpcPort int) chan error {
 	e := make(chan error, 1)
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+	var err error
+	defer func() {
+		if err != nil {
+			e <- err
+			cancel()
+		}
+	}()
 
 	mux := runtime.NewServeMux(
 		runtime.WithStreamErrorHandler(handleStreamError),
@@ -39,15 +45,13 @@ func RunGateway(httpPort, grpcPort int) chan error {
 	}
 	endpoint := fmt.Sprintf("127.0.0.1:%d", grpcPort)
 
-	err := api.RegisterHostnameServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
+	err = api.RegisterHostnameServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 	if err != nil {
-		e <- err
 		return e
 	}
 
 	err = api.RegisterDnsServiceHandlerFromEndpoint(ctx, mux, endpoint, opts)
 	if err != nil {
-		e <- err
 		return e
 	}
 
@@ -57,9 +61,10 @@ func RunGateway(httpPort, grpcPort int) chan error {
 	)
 
 	go func() {
-		const readTimeout = 3 * time.Second
+		defer cancel()
+		const readTimeout = 3000 * time.Second
 		server := &http.Server{
-			Addr:              fmt.Sprintf("127.0.0.1:%d", httpPort),
+			Addr:              fmt.Sprintf(":%d", httpPort),
 			Handler:           mux,
 			ReadHeaderTimeout: readTimeout,
 		}
