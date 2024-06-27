@@ -12,7 +12,8 @@ import (
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	v1 "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/http/v1"
+
+	"github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/swagger"
 )
 
 // DNSServiceCreateNameserverReader is a Reader for the DNSServiceCreateNameserver structure.
@@ -52,7 +53,7 @@ DNSServiceCreateNameserverOK describes a response with status code 200, with def
 A successful response.
 */
 type DNSServiceCreateNameserverOK struct {
-	Payload *v1.V1NameserverResponse
+	Payload *swagger.V1NameserverResponse
 }
 
 // IsSuccess returns true when this dns service create nameserver o k response has a 2xx status code
@@ -95,13 +96,13 @@ func (o *DNSServiceCreateNameserverOK) String() string {
 	return fmt.Sprintf("[POST /api/dns][%d] dnsServiceCreateNameserverOK %s", 200, payload)
 }
 
-func (o *DNSServiceCreateNameserverOK) GetPayload() *v1.V1NameserverResponse {
+func (o *DNSServiceCreateNameserverOK) GetPayload() *swagger.V1NameserverResponse {
 	return o.Payload
 }
 
 func (o *DNSServiceCreateNameserverOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(v1.V1NameserverResponse)
+	o.Payload = new(swagger.V1NameserverResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -126,7 +127,7 @@ An unexpected error response.
 type DNSServiceCreateNameserverDefault struct {
 	_statusCode int
 
-	Payload *v1.RPCStatus
+	Payload *swagger.RPCStatus
 }
 
 // IsSuccess returns true when this Dns service create nameserver default response has a 2xx status code
@@ -169,13 +170,13 @@ func (o *DNSServiceCreateNameserverDefault) String() string {
 	return fmt.Sprintf("[POST /api/dns][%d] DnsService_CreateNameserver default %s", o._statusCode, payload)
 }
 
-func (o *DNSServiceCreateNameserverDefault) GetPayload() *v1.RPCStatus {
+func (o *DNSServiceCreateNameserverDefault) GetPayload() *swagger.RPCStatus {
 	return o.Payload
 }
 
 func (o *DNSServiceCreateNameserverDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(v1.RPCStatus)
+	o.Payload = new(swagger.RPCStatus)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

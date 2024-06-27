@@ -14,8 +14,6 @@ import (
 	"github.com/go-openapi/runtime"
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
-
-	"github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/http/v1"
 )
 
 // NewHostnameServiceGetHostnameParams creates a new HostnameServiceGetHostnameParams object,

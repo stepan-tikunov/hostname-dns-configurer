@@ -15,8 +15,7 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/http/v1"
-	v1 "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/http/v1"
+	"github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/swagger"
 )
 
 // NewHostnameServiceSetHostnameParams creates a new HostnameServiceSetHostnameParams object,
@@ -65,7 +64,7 @@ HostnameServiceSetHostnameParams contains all the parameters to send to the API 
 type HostnameServiceSetHostnameParams struct {
 
 	// Body.
-	Body *v1.V1HostnameMessage
+	Body *swagger.V1HostnameMessage
 
 	timeout    time.Duration
 	Context    context.Context
@@ -121,13 +120,13 @@ func (o *HostnameServiceSetHostnameParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the hostname service set hostname params
-func (o *HostnameServiceSetHostnameParams) WithBody(body *v1.V1HostnameMessage) *HostnameServiceSetHostnameParams {
+func (o *HostnameServiceSetHostnameParams) WithBody(body *swagger.V1HostnameMessage) *HostnameServiceSetHostnameParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the hostname service set hostname params
-func (o *HostnameServiceSetHostnameParams) SetBody(body *v1.V1HostnameMessage) {
+func (o *HostnameServiceSetHostnameParams) SetBody(body *swagger.V1HostnameMessage) {
 	o.Body = body
 }
 

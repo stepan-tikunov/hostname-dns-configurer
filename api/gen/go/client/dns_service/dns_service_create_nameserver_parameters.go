@@ -15,7 +15,7 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	v1 "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/http/v1"
+	"github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/swagger"
 )
 
 // NewDNSServiceCreateNameserverParams creates a new DNSServiceCreateNameserverParams object,
@@ -64,7 +64,7 @@ DNSServiceCreateNameserverParams contains all the parameters to send to the API 
 type DNSServiceCreateNameserverParams struct {
 
 	// Body.
-	Body *v1.V1CreateNameserverRequest
+	Body *swagger.V1CreateNameserverRequest
 
 	timeout    time.Duration
 	Context    context.Context
@@ -120,13 +120,13 @@ func (o *DNSServiceCreateNameserverParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the Dns service create nameserver params
-func (o *DNSServiceCreateNameserverParams) WithBody(body *v1.V1CreateNameserverRequest) *DNSServiceCreateNameserverParams {
+func (o *DNSServiceCreateNameserverParams) WithBody(body *swagger.V1CreateNameserverRequest) *DNSServiceCreateNameserverParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the Dns service create nameserver params
-func (o *DNSServiceCreateNameserverParams) SetBody(body *v1.V1CreateNameserverRequest) {
+func (o *DNSServiceCreateNameserverParams) SetBody(body *swagger.V1CreateNameserverRequest) {
 	o.Body = body
 }
 

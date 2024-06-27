@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	v1 "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/http/v1"
+	"github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/swagger"
 )
 
 // DNSServiceGetNameserverListReader is a Reader for the DNSServiceGetNameserverList structure.
@@ -53,7 +53,7 @@ DNSServiceGetNameserverListOK describes a response with status code 200, with de
 A successful response.
 */
 type DNSServiceGetNameserverListOK struct {
-	Payload *v1.V1NameserverList
+	Payload *swagger.V1NameserverList
 }
 
 // IsSuccess returns true when this dns service get nameserver list o k response has a 2xx status code
@@ -96,13 +96,13 @@ func (o *DNSServiceGetNameserverListOK) String() string {
 	return fmt.Sprintf("[GET /api/dns][%d] dnsServiceGetNameserverListOK %s", 200, payload)
 }
 
-func (o *DNSServiceGetNameserverListOK) GetPayload() *v1.V1NameserverList {
+func (o *DNSServiceGetNameserverListOK) GetPayload() *swagger.V1NameserverList {
 	return o.Payload
 }
 
 func (o *DNSServiceGetNameserverListOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(v1.V1NameserverList)
+	o.Payload = new(swagger.V1NameserverList)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -127,7 +127,7 @@ An unexpected error response.
 type DNSServiceGetNameserverListDefault struct {
 	_statusCode int
 
-	Payload *v1.RPCStatus
+	Payload *swagger.RPCStatus
 }
 
 // IsSuccess returns true when this Dns service get nameserver list default response has a 2xx status code
@@ -170,13 +170,13 @@ func (o *DNSServiceGetNameserverListDefault) String() string {
 	return fmt.Sprintf("[GET /api/dns][%d] DnsService_GetNameserverList default %s", o._statusCode, payload)
 }
 
-func (o *DNSServiceGetNameserverListDefault) GetPayload() *v1.RPCStatus {
+func (o *DNSServiceGetNameserverListDefault) GetPayload() *swagger.RPCStatus {
 	return o.Payload
 }
 
 func (o *DNSServiceGetNameserverListDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(v1.RPCStatus)
+	o.Payload = new(swagger.RPCStatus)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

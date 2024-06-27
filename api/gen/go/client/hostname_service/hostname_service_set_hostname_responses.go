@@ -12,7 +12,8 @@ import (
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	v1 "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/http/v1"
+
+	"github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/swagger"
 )
 
 // HostnameServiceSetHostnameReader is a Reader for the HostnameServiceSetHostname structure.
@@ -52,7 +53,7 @@ HostnameServiceSetHostnameOK describes a response with status code 200, with def
 A successful response.
 */
 type HostnameServiceSetHostnameOK struct {
-	Payload *v1.V1HostnameMessage
+	Payload *swagger.V1HostnameMessage
 }
 
 // IsSuccess returns true when this hostname service set hostname o k response has a 2xx status code
@@ -95,13 +96,13 @@ func (o *HostnameServiceSetHostnameOK) String() string {
 	return fmt.Sprintf("[POST /api/hostname][%d] hostnameServiceSetHostnameOK %s", 200, payload)
 }
 
-func (o *HostnameServiceSetHostnameOK) GetPayload() *v1.V1HostnameMessage {
+func (o *HostnameServiceSetHostnameOK) GetPayload() *swagger.V1HostnameMessage {
 	return o.Payload
 }
 
 func (o *HostnameServiceSetHostnameOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(v1.V1HostnameMessage)
+	o.Payload = new(swagger.V1HostnameMessage)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -126,7 +127,7 @@ An unexpected error response.
 type HostnameServiceSetHostnameDefault struct {
 	_statusCode int
 
-	Payload *v1.RPCStatus
+	Payload *swagger.RPCStatus
 }
 
 // IsSuccess returns true when this hostname service set hostname default response has a 2xx status code
@@ -169,13 +170,13 @@ func (o *HostnameServiceSetHostnameDefault) String() string {
 	return fmt.Sprintf("[POST /api/hostname][%d] HostnameService_SetHostname default %s", o._statusCode, payload)
 }
 
-func (o *HostnameServiceSetHostnameDefault) GetPayload() *v1.RPCStatus {
+func (o *HostnameServiceSetHostnameDefault) GetPayload() *swagger.RPCStatus {
 	return o.Payload
 }
 
 func (o *HostnameServiceSetHostnameDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(v1.RPCStatus)
+	o.Payload = new(swagger.RPCStatus)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {

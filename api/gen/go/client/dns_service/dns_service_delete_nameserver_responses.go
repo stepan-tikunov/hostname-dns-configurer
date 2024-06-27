@@ -12,7 +12,8 @@ import (
 
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
-	v1 "github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/http/v1"
+
+	"github.com/stepan-tikunov/hostname-dns-configurer/api/gen/go/swagger"
 )
 
 // DNSServiceDeleteNameserverReader is a Reader for the DNSServiceDeleteNameserver structure.
@@ -52,7 +53,7 @@ DNSServiceDeleteNameserverOK describes a response with status code 200, with def
 A successful response.
 */
 type DNSServiceDeleteNameserverOK struct {
-	Payload *v1.V1NameserverResponse
+	Payload *swagger.V1NameserverResponse
 }
 
 // IsSuccess returns true when this dns service delete nameserver o k response has a 2xx status code
@@ -95,13 +96,13 @@ func (o *DNSServiceDeleteNameserverOK) String() string {
 	return fmt.Sprintf("[DELETE /api/dns/{index}][%d] dnsServiceDeleteNameserverOK %s", 200, payload)
 }
 
-func (o *DNSServiceDeleteNameserverOK) GetPayload() *v1.V1NameserverResponse {
+func (o *DNSServiceDeleteNameserverOK) GetPayload() *swagger.V1NameserverResponse {
 	return o.Payload
 }
 
 func (o *DNSServiceDeleteNameserverOK) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(v1.V1NameserverResponse)
+	o.Payload = new(swagger.V1NameserverResponse)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
@@ -126,7 +127,7 @@ An unexpected error response.
 type DNSServiceDeleteNameserverDefault struct {
 	_statusCode int
 
-	Payload *v1.RPCStatus
+	Payload *swagger.RPCStatus
 }
 
 // IsSuccess returns true when this Dns service delete nameserver default response has a 2xx status code
@@ -169,13 +170,13 @@ func (o *DNSServiceDeleteNameserverDefault) String() string {
 	return fmt.Sprintf("[DELETE /api/dns/{index}][%d] DnsService_DeleteNameserver default %s", o._statusCode, payload)
 }
 
-func (o *DNSServiceDeleteNameserverDefault) GetPayload() *v1.RPCStatus {
+func (o *DNSServiceDeleteNameserverDefault) GetPayload() *swagger.RPCStatus {
 	return o.Payload
 }
 
 func (o *DNSServiceDeleteNameserverDefault) readResponse(response runtime.ClientResponse, consumer runtime.Consumer, formats strfmt.Registry) error {
 
-	o.Payload = new(v1.RPCStatus)
+	o.Payload = new(swagger.RPCStatus)
 
 	// response payload
 	if err := consumer.Consume(response.Body(), o.Payload); err != nil && err != io.EOF {
